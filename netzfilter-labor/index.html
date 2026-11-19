@@ -153,7 +153,7 @@ function solve(p,dt,n,warmup,t0,useMov,state=[0,0,0],sourceOffset=0) {
   return {traces,state:[v1,v2,current]};
 }
 function bounds(a) {
-  let low=0,high=0;
+  let low=Infinity,high=-Infinity;
   for(const v of a){low=Math.min(low,v);high=Math.max(high,v)}
   return [low,high];
 }
@@ -230,9 +230,6 @@ function pixelBounds(j,a,b) {
     }
     const trace=e.traces[j], from=Math.max(0,Math.ceil((a-e.t0)/dt)), to=Math.min(trace.length-1,Math.floor((b-e.t0)/dt));
     for(let i=from;i<=to;i++){low=Math.min(low,trace[i]);high=Math.max(high,trace[i])}
-    for(const t of [a,b]){
-      const v=sampleAt(trace,dt,t-e.t0);low=Math.min(low,v);high=Math.max(high,v);
-    }
   }
   return [low,high];
 }
