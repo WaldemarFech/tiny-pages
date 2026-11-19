@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<title>Provider-Router</title>
+<link rel="stylesheet" href="./router.css?v=20261102d">
+</head>
+<body class="page-router">
+<header class="top">
+  <div class="brand">
+    <div class="kicker" id="modelName">DeepSeek V4.1 Flash · OpenRouter</div>
+    <h1>Provider-Router</h1>
+  </div>
+  <nav class="seg" aria-label="Seiten">
+    <a href="./" aria-current="page">Router</a>
+    <a href="./modelle/">Modelle</a>
+    <a href="./preis-uhr/">Preis-Uhr</a>
+  </nav>
+  <div class="orl" aria-label="Bei OpenRouter öffnen">
+    <a class="ext" id="orModel" href="https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017" target="_blank" rel="noopener noreferrer" aria-label="Modellseite bei OpenRouter (öffnet in neuem Tab)">Modell <svg class="ext-ic" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="ext" href="https://openrouter.ai/rankings" target="_blank" rel="noopener noreferrer" aria-label="Rankings bei OpenRouter (öffnet in neuem Tab)">Rankings <svg class="ext-ic" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2 7.5 8.5M12 9.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+  <div class="fresh" id="fresh" role="status">Lade Daten …</div>
+</header>
+
+<main id="app">
+  <section class="card hero" id="hero" aria-labelledby="h-hero"><h2 id="h-hero" class="sr">Aktuelle Entscheidung</h2><div id="heroBody" class="loading">Lade …</div></section>
+
+  <section class="card" id="ranking" aria-labelledby="h-rank">
+    <div class="sec-head"><h2 id="h-rank">Welcher Anbieter lohnt sich?</h2><button class="i" data-explain="windows" aria-label="Erklärung: Zeiträume">i</button></div>
+    <div class="tabs" role="tablist" id="rankTabs" aria-label="Zeitraum"></div>
+    <div id="rankBody"></div>
+  </section>
+
+  <section class="card" id="whatif" aria-labelledby="h-wi">
+    <div class="sec-head"><h2 id="h-wi">Entscheidungshilfe: was wäre wenn?</h2><button class="i" data-explain="whatif" aria-label="Erklärung: Entscheidungshilfe">i</button></div>
+    <p class="lead sim">Simulation im Browser. Verändert nichts am Router und keine gemessenen Werte.</p>
+    <div id="wiBody"></div>
+  </section>
+
+  <section class="card" id="watch" aria-labelledby="h-watch">
+    <div class="sec-head"><h2 id="h-watch">Anbieter im Blick</h2><button class="i" data-explain="watch" aria-label="Erklärung: Anbieter im Blick">i</button></div>
+    <p class="lead">Jeder neue Platz 1 landet hier. War ein Anbieter <b>7 Tage</b> nicht mehr der günstigste, verschwindet er wieder. Preise je 1M Prompt bei unserem Verbrauch.</p>
+    <div id="watchBody" class="loading">Lade …</div>
+  </section>
+
+  <section class="card" id="control" aria-labelledby="h-control">
+    <div class="sec-head"><h2 id="h-control">Erwartung gegen Messung</h2><button class="i" data-explain="expectation" aria-label="Erklärung: Erwartung gegen Messung">i</button></div>
+    <p class="lead">Der Router rechnet mit Annahmen. Hier steht, wie gut sie zur Wirklichkeit passen. <span class="key"><i class="k-exp"></i>Erwartung</span> <span class="key"><i class="k-mea"></i>Messung</span></p>
+    <div class="grid2" id="controlGrid"></div>
+  </section>
+
+  <section class="card" id="forecast" aria-labelledby="h-fc">
+    <div class="sec-head"><h2 id="h-fc">Prognose: nächste 24 Stunden</h2><button class="i" data-explain="forecast" aria-label="Erklärung: Prognose">i</button></div>
+    <div class="tabs" role="tablist" id="fcTabs" aria-label="Einheit"></div>
+    <div id="fcBody"></div>
+  </section>
+
+  <section class="card" id="log" aria-labelledby="h-log">
+    <div class="sec-head"><h2 id="h-log">Protokoll</h2><button class="i" data-explain="flank" aria-label="Erklärung: Preis-Flanke">i</button></div>
+    <div class="tabs" role="tablist" id="logTabs" aria-label="Filter"></div>
+    <div id="logBody"></div>
+  </section>
+
+  <section class="card" id="how" aria-labelledby="h-how">
+    <div class="sec-head"><h2 id="h-how">So entscheidet der Router</h2><button class="i" data-explain="switching" aria-label="Erklärung: Entscheidung">i</button></div>
+    <div id="howBody"></div>
+  </section>
+</main>
+
+<footer class="foot" id="foot"></footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog" class="dlg-in">
+    <h3 id="dlgTitle"></h3>
+    <div id="dlgBody"></div>
+    <button class="btn" value="close" autofocus>Schließen</button>
+  </form>
+</dialog>
+
+<script type="module" src="./router.js?v=20261102d"></script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Netzfilter-Labor</title>
+<style>
+:root{color-scheme:light;--bg:#edf1f5;--paper:#fff;--ink:#172a3a;--mut:#476075;--grid:#ced9e4;--before:#a64a08;--after:#087c70;--ref:#345fbb}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#101923;--paper:#172531;--ink:#e7eff6;--mut:#aabed1;--grid:#34495b;--before:#ffad67;--after:#57d6c3;--ref:#9eb9ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.35 system-ui,sans-serif}main{padding:12px clamp(8px,1.4vw,24px) 28px}h1{font-size:clamp(1.35rem,2vw,1.9rem);margin:0}header,.bar,.modes,.legend,.metrics{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap}header{justify-content:space-between;margin-bottom:8px}.mut,small{color:var(--mut)}.modes{margin-bottom:8px}.modes button{flex:1;white-space:nowrap}.layout{display:grid;grid-template-columns:clamp(215px,22vw,320px) minmax(0,1fr);gap:10px;align-items:start}.panel,details{border:1px solid var(--grid);border-radius:8px;background:var(--paper);padding:9px 12px}button,select{min-height:44px;font:inherit;color:inherit;background:var(--paper);border:1px solid var(--grid);border-radius:5px;padding:5px 9px;cursor:pointer}button[aria-pressed=true]{border-color:var(--ref);background:color-mix(in srgb,var(--ref) 12%,var(--paper));font-weight:650}button:disabled{opacity:.5;cursor:default}:focus-visible{outline:2px solid var(--ref);outline-offset:2px}input{accent-color:var(--ref)}.row{display:grid;grid-template-columns:minmax(0,1fr) 6em;align-items:center;column-gap:6px}.row input{grid-column:1/-1;width:100%;height:44px;margin:0}.row output{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.check{display:flex;align-items:center;gap:6px;min-height:44px}.bar label{display:flex;align-items:center;gap:5px}.bar input{min-width:65px;height:44px;width:clamp(65px,11vw,150px)}.legend button{border-color:transparent}.legend button[aria-pressed=false]{text-decoration:line-through;color:var(--mut)}.sw{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:5px;background:var(--line)}.plot{margin:2px 0 7px;border-top:1px solid var(--grid)}.plot h2{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:4px 0 0;font-size:.93rem}.plot h2 output{font-weight:500;color:var(--mut)}canvas{display:block;width:100%;height:clamp(112px,20vh,220px);touch-action:pan-y}.metrics{font-variant-numeric:tabular-nums;min-height:24px}.details{margin-top:9px;display:grid;gap:6px}details{padding:0 10px}summary{min-height:44px;align-content:center;cursor:pointer;font-weight:650}details p{margin:0 0 9px}.circuit{overflow:auto}svg{display:block;width:100%;min-width:655px;max-height:250px}#movWire.off{opacity:.28;stroke-dasharray:3 3}[hidden]{display:none!important}
+@media(max-width:720px){.layout{grid-template-columns:1fr}.modes{display:grid;grid-template-columns:1fr 1fr}.controls{position:sticky;top:0;z-index:1;padding:4px 8px;display:grid;grid-template-columns:1fr 1fr;gap:0 8px}.row{font-size:.82rem}.row input{height:44px}.check{font-size:.86rem}.bar{gap:4px 6px}canvas{height:120px}.panel{padding-inline:8px}}
+.row{grid-template-columns:minmax(0,1fr) auto}.bar .viewChoice{display:flex;gap:4px}.metrics{gap:4px 12px}.legend button{padding-inline:6px}.legend button:disabled{opacity:.55}.details>details{min-width:0}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Netzfilter-Labor</h1><span id="mainsLabel" class="mut">230 V effektiv · 50 Hz</span></header>
+<nav class="modes" aria-label="Störungsart">
+<button data-mode="dm" aria-pressed="true">Gegentakt</button><button data-mode="cm" aria-pressed="false">Gleichtakt</button>
+<button data-mode="surge" aria-pressed="false">Surge · 1 kV</button><button data-mode="burst" aria-pressed="false">Burst · 1 kV</button>
+</nav>
+<div class="layout">
+<section class="panel controls" aria-label="Bauteile">
+<label class="row" id="r1"><span>X2 am Eingang</span><output id="o1"></output><input aria-label="X2 am Eingang" type="range" id="s1" min="0" max="7" value="2"></label>
+<label class="row" id="r2"><span>Drossel</span><output id="o2"></output><input aria-label="Drossel" type="range" id="s2" min="0" max="6" value="2"></label>
+<label class="row" id="r3"><span>X2 am Ausgang</span><output id="o3"></output><input aria-label="X2 am Ausgang" type="range" id="s3" min="0" max="7" value="3"></label>
+<label class="row" id="r4" hidden><span>Y2 je Leitung</span><output id="o4"></output><input aria-label="Y2 je Leitung" type="range" id="s4" min="0" max="4" value="2"></label>
+<label class="check" id="movControl" hidden><input id="mov" type="checkbox" checked>Varistor (MOV)</label>
+<label class="check" id="phaseControl" hidden>Stoßphase <select id="phase" aria-label="Stoßphase"><option>45°</option><option>0°</option><option>90°</option><option>270°</option></select></label>
+</section>
+<section class="panel" aria-label="Zeitverläufe">
+<div class="bar">
+<div class="viewChoice" role="group" aria-label="Spannungsdarstellung"><button id="totalView" aria-pressed="true">Netz + Störung</button><button id="noiseView" aria-pressed="false">Nur Störung</button></div>
+<label id="mainsControl">Netz <select id="mains" aria-label="Netzspannung"><option>230 V</option><option>253 V</option></select></label>
+<button id="minus" aria-label="Zeit herauszoomen">−</button><button id="plus" aria-label="Zeit hineinzoomen">+</button>
+<button id="overview">40 ms</button><button id="detail">Stördetail</button>
+<button id="back" hidden aria-label="Vorheriges Zeitfenster">←</button><button id="forward" hidden aria-label="Nächstes Zeitfenster">→</button>
+<label id="panLabel" hidden>Position <input id="pan" type="range" min="0" max="10000" value="0" aria-label="Zeitfenster verschieben"></label>
+</div>
+<div class="legend" aria-label="Kurven ein- und ausblenden">
+<button data-series="before" aria-pressed="true"><i class="sw" style="--line:var(--before)"></i>Vor der Drossel</button>
+<button data-series="after" aria-pressed="true"><i class="sw" style="--line:var(--after)"></i>Hinter der Drossel</button>
+<button data-series="ref" aria-pressed="true"><i class="sw" style="--line:var(--ref)"></i>Idealer Sinus</button>
+</div>
+<div class="metrics"><span id="probe"></span><span id="reading" class="mut"></span></div>
+<p id="emptyPlot" hidden>Über die Legende lässt sich jeder Messpunkt wieder einblenden.</p>
+<section class="plot" id="beforePlot"><h2>Eingang · v1 <output id="peak1"></output></h2><canvas id="before" role="img" aria-label="Berechnete Spannung vor der Drossel"></canvas></section>
+<section class="plot" id="afterPlot"><h2>Gleichrichtereingang · v2 <output id="peak2"></output></h2><canvas id="after" role="img" aria-label="Berechnete Spannung am Gleichrichtereingang"></canvas></section>
+</section>
+</div>
+<div class="details">
+<details><summary>Messpunkte, Effektivwert und 16,8 V</summary>
+<p>230 V effektiv entsprechen rund 325 V Spitze, 253 V effektiv rund 358 V Spitze. Im Gegentakt, bei Surge und bei Burst wird die Differenz L−N an v1 bzw. v2 gezeigt. Gleichtakt zeigt jeweils den gemeinsamen Anteil (L+N)/2 gegen PE. Der 50-Hz-Differenzsinus fällt bei dieser Gleichtaktdefinition heraus.</p>
+<p>Die 16,8 V der ursprünglichen Ansicht ergaben sich aus der automatisch skalierten Störkurve um 0 V. „Nur Störung“ zieht den idealen Sinus ab. Beide Diagramme verwenden dieselbe Zeit- und Spannungsskala. Die Störspitzen beziehen sich auf den gesamten berechneten Verlauf. „Stördetail“ springt zum Impuls bzw. zeigt einzelne Schaltperioden. Ziehen in der Grafik markiert ein Zeitfenster, die Position verschiebt es. Der Zeiger liest beide Messpunkte zur selben Zeit ab.</p></details>
+<details><summary>Störquellen und Grenzen des Modells</summary><p>Gegen- und Gleichtakt verwenden periodische Anregung bei 100 kHz. Surge ist ein einzelner positiver Impuls mit vereinfachter 1,2/50-µs-Form und 2 Ω Quellwiderstand. Das Burst-Beispiel zeigt eine 15-ms-Gruppe mit 5 kHz Pulsfolge (ca. 5 ns Anstieg, 50 ns Halbwertszeit). Die einzelnen Burst-Antworten werden als kurze lokale Transienten angesetzt.</p><p>Das Ersatznetz berechnet die Störspannung vor und hinter der Drossel. Die 50 Hz werden als ideale Grundschwingung addiert. Der zuschaltbare MOV liegt vor der Drossel zwischen L und N. Seine symmetrische Kennlinie ist vereinfacht, inklusive eines zusätzlichen Serienwiderstands im Modell. Gleichrichter, Elko, Netzlast bei 50 Hz, parasitäre Effekte und Erwärmung sind im Schaltbild zur Orientierung dargestellt bzw. im Ersatzmodell nicht vollständig abgebildet. Die Seite dient dem Vergleich, eine Normprüfung erfordert ein Prüfgerät und einen definierten Aufbau.</p></details>
+<details id="circuitDetails"><summary>Schaltbild mit Messpunkten und Diodenbrücke</summary>
+<div class="circuit"><svg viewBox="0 0 790 218" role="img" aria-label="L und N mit Sicherung, NTC, Varistor am Filtereingang, X2, Drossel, X2, Y2 gegen PE, vier Dioden und Elko">
+<defs><g id="diode"><path d="M-20 0h12m16 0h12M8-8V8M-8-7L8 0-8 7Z"/></g></defs>
+<g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+<path d="M16 50H40M76 50H102M140 50H245M305 50H490V106H520M16 148H245M305 148H472V204H686V106H660"/>
+<rect x="40" y="42" width="36" height="16"/><rect x="102" y="42" width="38" height="16"/><path d="M105 62l31-24"/>
+<path id="movWire" d="M166 50v33m0 31v34m-8-65h16v31h-16zM154 116l24-35h7"/>
+<path d="M212 50v40m-12 0h24m-24 10h24m-12 0v48M342 50v40m-12 0h24m-24 10h24m-12 0v48"/>
+<path d="M245 50q5-16 10 0q5-16 10 0q5-16 10 0q5-16 10 0q5-16 10 0q5-16 10 0M245 148q5-16 10 0q5-16 10 0q5-16 10 0q5-16 10 0q5-16 10 0q5-16 10 0M251 96h48m-48 6h48"/>
+<path d="M388 50v54m-11 0h22m-22 9h22m-11 0v79h47v-20m-11 0h22m-22-9h22m-11 0v-15M409 192v9m-11 0h22m-18 5h14"/>
+<path d="M520 106L541 85M569 57L590 36 611 57M639 85L660 106 639 127M611 155L590 176 569 155M541 127L520 106M590 36H739V92m-13 0h26m-26 12h26m-13 0v72H590"/>
+<use href="#diode" transform="translate(555 71) rotate(-45)" style="fill:var(--paper);paint-order:stroke"/><use href="#diode" transform="translate(625 71) rotate(-135)" style="fill:var(--paper);paint-order:stroke"/>
+<use href="#diode" transform="translate(555 141) rotate(-135)" style="fill:var(--paper);paint-order:stroke"/><use href="#diode" transform="translate(625 141) rotate(-45)" style="fill:var(--paper);paint-order:stroke"/>
+</g>
+<g fill="currentColor" font-size="13"><text x="16" y="43">L</text><text x="16" y="141">N</text><text x="34" y="34">Sicherung</text><text x="107" y="34">NTC</text><text x="150" y="174" id="movLabel">MOV</text><text x="223" y="84">CX1</text><text x="250" y="122">Drossel</text><text x="352" y="84">CX2</text><text x="399" y="107">Y2</text><text x="445" y="180">Y2</text><text x="369" y="204">PE</text><text x="508" y="99">~</text><text x="670" y="99">~</text><text x="518" y="65">D1</text><text x="637" y="64">D2</text><text x="519" y="153">D3</text><text x="644" y="153">D4</text><text x="705" y="31">+</text><text x="705" y="170">−</text><text x="748" y="81">Elko</text></g>
+<g fill="var(--before)"><circle cx="212" cy="50" r="4"/><circle cx="212" cy="148" r="4"/><text x="199" y="35">v1</text></g>
+<g fill="var(--after)"><circle cx="462" cy="50" r="4"/><circle cx="462" cy="148" r="4"/><text x="453" y="35">v2</text></g>
+</svg></div></details>
+<details id="sp"><summary>Störspektrum am Netzanschluss · dBµV</summary><canvas id="cs" role="img" aria-label="Vereinfachtes Emissionsmodell am Netzanschluss"></canvas><p class="mut">Blau: ohne Filter · Grün: mit Filter · Orange gestrichelt: vereinfachte Klasse-B-Grenzlinie. Separates Emissionsmodell, Spitzenpegel statt Quasi-Peak.</p></details>
+</div>
+</main>
+<script>
+const $=s=>document.querySelector(s),AX=[[0,10,22,47,100,220,470,1000],[0,1,2.2,4.7,10,22,47],[0,10,22,47,100,220,470,1000],[0,1,2.2,4.7,10]],UN=['nF','mH','nF','nF'];
+const col=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1]],mul=(a,b)=>[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]],inv=a=>{const d=a[0]*a[0]+a[1]*a[1];return[a[0]/d,-a[1]/d]},par=(a,b)=>inv(add(inv(a),inv(b))),ab=a=>Math.hypot(a[0],a[1]);
+const sa=68e-6,sb=.4e-6,tp=Math.log(sa/sb)*sa*sb/(sa-sb),SK=1000/(Math.exp(-tp/sa)-Math.exp(-tp/sb));
+function P(v,m){
+ const tr=m==='surge'||m==='burst';
+ return m==='cm'?{C1:.2e-9,C2:(2*v[3]+.2)*1e-9,L:v[1]*1e-3+.5e-6,Rm:25,Rl:1e6}
+ :{C1:(v[0]+.2)*1e-9,C2:(v[2]+.2)*1e-9,L:v[1]*15e-6+.5e-6,Rm:m==='surge'?2:m==='burst'?50:100,Rl:tr?100:1e6};
+}
+function spec(m,p){
+ const r=[];
+ for(let k=3;k<=299;k+=2){
+  const f=k*1e5,w=2*Math.PI*f,x=Math.PI*k/2,y=Math.PI*k*2e-3,g=Math.abs(Math.sin(x)/x*Math.sin(y)/y);
+  const I=m==='dm'?.3*g:w*20e-12*300*g;
+  const Za=par([0,-1/(w*p.C1)],[p.Rm,0]),Zb=add([0,w*p.L],Za),Z2=par([0,-1/(w*p.C2)],Zb);
+  r.push([f,20*Math.log10(I*ab(mul(Z2,mul(Za,inv(Zb))))*1e6)]);
+ }
+ return r;
+}
+const lim=f=>f<=5e5?66-10*Math.log10(f/1.5e5)/Math.log10(5e5/1.5e5):f<=5e6?56:60;
+const fv=v=>{const a=Math.abs(v);return a>=1?v.toFixed(a>=100?0:1)+' V':a>=1e-3?(v*1e3).toFixed(1)+' mV':(v*1e6).toFixed(1)+' µV'};
+function setup(c,h){const d=devicePixelRatio||1,w=c.clientWidth;c.width=Math.round(w*d);c.height=h*d;const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.font='12px system-ui,"Segoe UI",sans-serif';x.lineWidth=1;x.strokeStyle=col('--grid');x.fillStyle=col('--mut');return[x,w,h]}
+function splot(c,ref,cur){
+ const[x,w,h]=setup(c,230),L=40,R=10,T=10,B=24,pw=w-L-R,ph=h-T-B;
+ const fx=f=>L+pw*Math.log10(f/1.5e5)/Math.log10(200),dy=d=>T+ph*(1-Math.max(0,Math.min(140,d))/140);
+ x.textAlign='right';
+ for(let d=0;d<=140;d+=20){const yy=dy(d);x.beginPath();x.moveTo(L,yy);x.lineTo(w-R,yy);x.stroke();x.fillText(d,L-6,yy+4)}
+ x.textAlign='center';
+ for(const f of[1.5e5,5e5,1e6,5e6,3e7]){const xx=fx(f);x.beginPath();x.moveTo(xx,T);x.lineTo(xx,T+ph);x.stroke();x.fillText(f<1e6?f/1e3+' kHz':f/1e6+' MHz',xx,h-6)}
+ for(const[a,cl,wd]of[[ref,col('--ref'),3],[cur,col('--after'),1.6]]){x.strokeStyle=cl;x.lineWidth=wd;x.beginPath();for(const[f,d]of a){const xx=fx(f);x.moveTo(xx,dy(0));x.lineTo(xx,dy(d))}x.stroke()}
+ x.strokeStyle=col('--before');x.lineWidth=2;x.setLineDash([6,4]);x.beginPath();x.moveTo(fx(1.5e5),dy(66));x.lineTo(fx(5e5),dy(56));x.lineTo(fx(5e6),dy(56));x.lineTo(fx(5e6),dy(60));x.lineTo(fx(3e7),dy(60));x.stroke();x.setLineDash([]);
+}
+const TOTAL = .04;
+const controls = AX.map((_,i)=>$('#s'+(i+1)));
+const visible = {before:true,after:true,ref:true};
+let mode='dm', view='total', span=TOTAL, start=0, cursor=null, anchor=null, frame=0, dirty=false, model;
+const base = t => mode==='cm' ? 0 : Number.parseInt($('#mains').value)*Math.SQRT2*Math.sin(2*Math.PI*50*t);
+const isPulse = () => mode==='surge'||mode==='burst';
+const phaseTime = () => Number.parseInt($('#phase').value)/18000+.02;
+const firstEvent = () => mode==='surge' ? phaseTime() : .003;
+const time = n => (n*1000).toLocaleString('de-DE',{maximumFractionDigits:6})+' ms';
+const sampleAt = (a,dt,t) => {
+  const i=t/dt, k=Math.floor(i);
+  return k<0 || k>=a.length ? 0 : a[k]+((a[k+1]??a[k])-a[k])*(i-k);
+};
+function source(t) {
+  if(mode==='surge') return SK*(Math.exp(-t/sa)-Math.exp(-t/sb));
+  if(mode==='burst') return 1000*(t<5e-9?t/5e-9:Math.exp(-(t-5e-9)*Math.LN2/45e-9));
+  const q=t%1e-5, edge=2e-8;
+  if(mode==='cm') return q<edge?.3:q>=5e-6&&q<5e-6+edge?-.3:0;
+  const rise=Math.min(1,Math.max(0,q/edge));
+  const fall=Math.min(1,Math.max(0,(q-5e-6)/edge));
+  return .3*(rise-fall-.5);
+}
+function solve(p,dt,n,warmup,t0,useMov) {
+  const traces=[new Float32Array(n),new Float32Array(n)];
+  const g1=p.C1/dt,g2=p.C2/dt,gL=dt/p.L,gR=1/p.Rm;
+  const d2=g2+1/p.Rl+gL;
+  const slope=g1+gR+gL-gL*gL/d2;
+  const pulse=isPulse(), clampG=1/5.6, bias=base(t0);
+  let v1=0,v2=0,current=0;
+  for(let k=-warmup;k<n;k++){
+    const input=source((k+warmup)*dt);
+    const rhs2=g2*v2+current;
+    const rhs1=g1*v1-current+(pulse?input*gR:input)+gL*rhs2/d2;
+    v1=rhs1/slope;
+    if(useMov && Math.abs(v1+bias)>430){
+      const knee=Math.sign(v1+bias)*430-bias;
+      v1=(rhs1+clampG*knee)/(slope+clampG);
+    }
+    v2=(rhs2+gL*v1)/d2;
+    current+=gL*(v1-v2);
+    if(k>=0){traces[0][k]=v1;traces[1][k]=v2}
+  }
+  return traces;
+}
+function bounds(a) {
+  let low=0,high=0;
+  for(const v of a){low=Math.min(low,v);high=Math.max(high,v)}
+  return [low,high];
+}
+function build() {
+  const cm=mode==='cm', pulse=isPulse(), mov=pulse&&$('#mov').checked;
+  const values=controls.map((el,i)=>AX[i][+el.value]);
+  values.forEach((v,i)=>{$('#o'+(i+1)).value=v+' '+UN[i]});
+  [cm,false,cm,!cm].forEach((hide,i)=>{$('#r'+(i+1)).hidden=hide});
+  $('#movControl').hidden=!pulse;
+  $('#phaseControl').hidden=mode!=='surge';
+  $('#mainsControl').hidden=cm;
+  $('#probe').textContent=cm?'Gemeinsame Spannung L/N gegen PE · 100 kHz':'Differenzspannung L−N'+(mode==='dm'?' · 100 kHz':'');
+  $('#movWire').classList.toggle('off',!mov);
+  $('#movLabel').textContent='MOV '+(mov?'an':'aus');
+  $('#sp').hidden=pulse;
+  const params=P(values,mode);
+  const dt=mode==='burst'?2.5e-9:mode==='surge'?20e-9:10e-9;
+  const length=mode==='burst'?12000:mode==='surge'?15000:1000;
+  const count=mode==='burst'?75:1;
+  const events=Array.from({length:count},(_,i)=>{
+    const t0=pulse?firstEvent()+i*.0002:0;
+    const traces=solve(params,dt,length,pulse?0:30000,t0,mov);
+    return {t0,end:t0+length*dt,traces,extrema:traces.map(bounds)};
+  });
+  const amplitudes=[0,1].map(j=>Math.max(...events.map(e=>Math.max(...e.extrema[j].map(Math.abs)))));
+  model={dt,events,amplitudes,values};
+}
+function eventValue(j,t) {
+  if(!isPulse())return sampleAt(model.events[0].traces[j],model.dt,((t%1e-5)+1e-5)%1e-5);
+  const k=mode==='burst'?Math.floor((t-firstEvent())/.0002+1e-10):0;
+  const e=model.events[k];
+  return e?sampleAt(e.traces[j],model.dt,t-e.t0):0;
+}
+function pixelBounds(j,a,b) {
+  const {dt,events}=model;
+  if(!isPulse() && b-a>=1e-5) return events[0].extrema[j];
+  if(!isPulse()){
+    let low=eventValue(j,a),high=low;
+    for(let t=a+dt;t<=b+dt;t+=dt){
+      const v=eventValue(j,Math.min(t,b));
+      low=Math.min(low,v);high=Math.max(high,v);
+    }
+    return [low,high];
+  }
+  const endpoints=[eventValue(j,a),eventValue(j,b)];
+  let low=Math.min(...endpoints),high=Math.max(...endpoints);
+  const first=mode==='burst'?Math.max(0,Math.floor((a-firstEvent())/.0002)):0;
+  for(let k=first;k<events.length&&events[k].t0<=b;k++){
+    const e=events[k];
+    if(e.end<a)continue;
+    if(a<=e.t0&&b>=e.end){
+      low=Math.min(low,e.extrema[j][0]);high=Math.max(high,e.extrema[j][1]);continue;
+    }
+    const trace=e.traces[j], from=Math.max(0,Math.ceil((a-e.t0)/dt)), to=Math.min(trace.length-1,Math.floor((b-e.t0)/dt));
+    for(let i=from;i<=to;i++){low=Math.min(low,trace[i]);high=Math.max(high,trace[i])}
+    for(const t of [a,b]){
+      const v=sampleAt(trace,dt,t-e.t0);low=Math.min(low,v);high=Math.max(high,v);
+    }
+  }
+  return [low,high];
+}
+function drawPlot(canvas,j,total,low,high) {
+  const [ctx,w,h]=setup(canvas,canvas.clientHeight), left=68,right=10,top=10,bottom=24;
+  const pw=w-left-right, ph=h-top-bottom;
+  if(pw<10||ph<10)return;
+  const y=v=>top+(high-v)*ph/(high-low);
+  const x=t=>left+(t-start)*pw/span;
+  const grid=col('--grid')||'#8899aa';
+  const amplitude=Math.max(Math.abs(low),Math.abs(high));
+  const [unit, multiplier]=amplitude>=1?['V',1]:amplitude>=.001?['mV',1000]:['µV',1e6];
+  ctx.strokeStyle=grid;ctx.fillStyle=col('--mut');
+  ctx.textAlign='right';
+  for(let k=0;k<=4;k++){
+    const yy=top+k*ph/4;
+    ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(left+pw,yy);ctx.stroke();
+    const tick=high-k*(high-low)/4;
+    ctx.fillText((tick*multiplier).toLocaleString('de-DE',{maximumFractionDigits:2})+' '+unit,left-5,yy+4);
+  }
+  const ticks=pw<340?2:4;
+  for(let k=0;k<=ticks;k++){
+    const xx=left+pw*k/ticks;
+    ctx.beginPath();ctx.moveTo(xx,top);ctx.lineTo(xx,top+ph);ctx.stroke();
+    ctx.textAlign=k===0?'left':k===ticks?'right':'center';
+    ctx.fillText(time(start+k*span/ticks),xx,h-5);
+  }
+  ctx.save();ctx.beginPath();ctx.rect(left,top,pw,ph);ctx.clip();
+  ctx.strokeStyle=col(j===0?'--before':'--after');
+  const fine=span/pw<model.dt*2;
+  ctx.lineWidth=1.5;ctx.beginPath();
+  for(let i=0;i<=pw;i++){
+    const a=start+span*i/pw,b=a+span/pw;
+    const t=(a+b)/2, offset=total?base(t):0;
+    const [min,max]=fine?[eventValue(j,t),eventValue(j,t)]:pixelBounds(j,a,b);
+    if(fine){if(i===0)ctx.moveTo(left+i,y(min+offset));else ctx.lineTo(left+i,y(min+offset))}
+    else {ctx.moveTo(left+i,y(min+offset));ctx.lineTo(left+i,y(max+offset)-.75)}
+  }
+  ctx.stroke();
+  if(total&&visible.ref){
+    ctx.strokeStyle=col('--ref');ctx.lineWidth=1;ctx.setLineDash([3,6]);ctx.beginPath();
+    for(let i=0;i<=pw;i++){const yy=y(base(start+span*i/pw));if(!i)ctx.moveTo(left+i,yy);else ctx.lineTo(left+i,yy)}
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  if(anchor!==null&&cursor!==null){ctx.globalAlpha=.18;ctx.fillStyle=col('--ref');ctx.fillRect(Math.min(x(anchor),x(cursor)),top,Math.abs(x(anchor)-x(cursor)),ph);ctx.globalAlpha=1}
+  if(cursor!==null&&cursor>=start&&cursor<=start+span){
+    ctx.strokeStyle=col('--ink');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x(cursor),top);ctx.lineTo(x(cursor),top+ph);ctx.stroke();
+  }
+  ctx.restore();
+}
+function render(){
+  const total=mode!=='cm'&&view==='total';
+  $('#totalView').disabled=mode==='cm';
+  $('#totalView').setAttribute('aria-pressed',String(total));
+  $('#noiseView').setAttribute('aria-pressed',String(!total));
+  $('#emptyPlot').hidden=visible.before||visible.after;
+  const peak=Math.max(...model.amplitudes,.001);
+  const windowAmplitude=total ? Math.max(peak,Math.abs(Number.parseInt($('#mains').value))*Math.SQRT2+peak) : peak;
+  let low=-windowAmplitude*1.05,high=-low;
+  if(total && span<.004){
+    const ref=[base(start),base(start+span)];
+    for(const t of [.005,.015,.025,.035])if(t>start&&t<start+span)ref.push(base(t));
+    low=Math.min(...ref)-peak*1.15;high=Math.max(...ref)+peak*1.15;
+  }
+  $('#mainsLabel').textContent=mode==='cm'?'50 Hz: Differenzsinus fällt heraus':$('#mains').value+' effektiv · 50 Hz';
+  $('[data-series=ref]').hidden=!total;
+  $('#panLabel').hidden=span===TOTAL;
+  $('#back').hidden=$('#forward').hidden=span===TOTAL;
+  $('#back').disabled=start===0;
+  $('#forward').disabled=start>=TOTAL-span;
+  $('#pan').value=span===TOTAL?0:Math.round(start/(TOTAL-span)*10000);
+  $('#minus').disabled=span===TOTAL;
+  $('#plus').disabled=span<=1e-7;
+  $('#peak1').value='Störspitze '+fv(model.amplitudes[0]);
+  $('#peak2').value='Störspitze '+fv(model.amplitudes[1]);
+  let reading=time(start)+' – '+time(start+span);
+  if(cursor!==null)reading=time(cursor)+' · v1 '+fv(eventValue(0,cursor)+(total?base(cursor):0))+' · v2 '+fv(eventValue(1,cursor)+(total?base(cursor):0));
+  $('#reading').textContent=reading;
+  for(const [j,key] of ['before','after'].entries()){
+    $('#'+key+'Plot').hidden=!visible[key];
+    if(visible[key])drawPlot($('#'+key),j,total,low,high);
+  }
+  if(!$('#sp').hidden&&$('#sp').open)splot($('#cs'),spec(mode,P([0,0,0,0],mode)),spec(mode,P(model.values,mode)));
+}
+function redraw(rebuild=false){
+  dirty ||= rebuild;
+  if(frame)return;
+  frame=requestAnimationFrame(()=>{frame=0;if(dirty){dirty=false;build()}render()});
+}
+function setWindow(center,width){
+  span=Math.max(1e-7,Math.min(TOTAL,width));
+  start=Math.max(0,Math.min(TOTAL-span,center-span/2));
+  cursor=null;render();
+}
+function reset(){setWindow(TOTAL/2,TOTAL)}
+function zoom(factor){setWindow(cursor??(start+span/2),span*factor)}
+function detail(){
+  if(isPulse()){
+    const t=firstEvent(),width=mode==='burst'?32e-6:.0003;
+    setWindow(t+width*.35,width);
+  } else {
+    setWindow(.01,.00006);
+    view='noise';render();
+  }
+}
+function update(){build();render()}
+document.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{
+  mode=button.dataset.mode;
+  document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+  view=mode==='cm'?'noise':'total';
+  build();reset();
+});
+document.querySelectorAll('[data-series]').forEach(button=>button.onclick=()=>{
+  const key=button.dataset.series;
+  visible[key]=!visible[key];
+  button.setAttribute('aria-pressed',String(visible[key]));
+  render();
+});
+for(const el of [...controls,$('#mov'),$('#phase'),$('#mains')])el.addEventListener('input',()=>redraw(true));
+$('#totalView').onclick=()=>{view='total';render()};
+$('#noiseView').onclick=()=>{view='noise';render()};
+$('#plus').onclick=()=>zoom(.25);
+$('#minus').onclick=()=>zoom(4);
+$('#overview').onclick=reset;
+$('#detail').onclick=detail;
+$('#back').onclick=()=>setWindow(start-span/4,span);
+$('#forward').onclick=()=>setWindow(start+span*1.25,span);
+$('#pan').oninput=e=>setWindow((TOTAL-span)*Number(e.target.value)/10000+span/2,span);
+$('#sp').ontoggle=()=>redraw();
+for(const canvas of [$('#before'),$('#after')]){
+  const locate=e=>start+span*Math.max(0,Math.min(1,(e.clientX-canvas.getBoundingClientRect().left-68)/(canvas.clientWidth-78)));
+  canvas.addEventListener('pointermove',e=>{cursor=locate(e);redraw()});
+  canvas.addEventListener('pointerdown',e=>{anchor=cursor=locate(e);canvas.setPointerCapture(e.pointerId);render()});
+  canvas.addEventListener('pointerup',e=>{
+    const end=locate(e), from=anchor;
+    anchor=null;
+    if(from!==null&&Math.abs(end-from)>span*.015)setWindow((from+end)/2,Math.abs(end-from));
+    else {cursor=end;render()}
+  });
+  canvas.addEventListener('pointercancel',()=>{anchor=cursor=null;render()});
+  canvas.addEventListener('pointerleave',()=>{if(anchor===null){cursor=null;render()}});
+  canvas.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();cursor=locate(e);zoom(e.deltaY>0?2:.5)},{passive:false});
+  canvas.addEventListener('dblclick',reset);
+}
+addEventListener('resize',()=>redraw());
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>redraw());
+update();
+</script>
+</body>
+</html>
