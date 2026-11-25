@@ -359,7 +359,7 @@ function renderFoot() {
   $('modelName').textContent = `${D.model} · OpenRouter`;
   const mu = orModelUrl(D.model);
   if (mu) $('orModel').href = mu;
-  $('foot').innerHTML = `Datenquelle: ${esc(D.node)}-Router, Preise live von openrouter.ai, Nutzung aus der lokalen opencode-Datenbank, Abrechnung aus dem OpenRouter-Schlüssel. Rein lesende Anzeige, es lässt sich nichts steuern. Es werden keine Schlüssel, Sitzungs-IDs oder Pfade veröffentlicht; vom Budget nur der verbleibende Rest. · <a href="./modelle/">Modelle & Rangliste</a> · <a href="./preis-uhr/">Preis-Uhr (Peak/Off-Peak)</a>`;
+  $('foot').innerHTML = `Datenquelle: ${esc(D.node)}-Router, Preise live von openrouter.ai, Nutzung aus der lokalen opencode-Datenbank, Abrechnung aus dem OpenRouter-Schlüssel. Rein lesende Anzeige, es lässt sich nichts steuern. Es werden keine Schlüssel, Sitzungs-IDs oder Pfade veröffentlicht; vom Budget nur der verbleibende Rest. · <a href="/modelle/">Modelle & Rangliste</a> · <a href="/preis-uhr/">Preis-Uhr (Peak/Off-Peak)</a>`;
 }
 
 // explanation dialog (tap/click/Enter; Esc closes; works on touch, not hover-only)

@@ -1,3 +1,4 @@
-# Optional local feeds for the dashboard and model overview.
+# Local preview data: the router publishes these files to the CT itself,
+# they are never part of the deploy tarball (see deploy/deploy-site.sh).
 router.json
 models_trending.json

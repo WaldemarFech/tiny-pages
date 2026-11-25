@@ -1,0 +1,14 @@
+# Runtime data published by the router (never committed; the router publishes it to the server)
+deepseek-offpeak/router.json
+deepseek-offpeak/models_trending.json
+
+# Local environment
+.env
+*.tmp
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Python test caches
+.pytest_cache/

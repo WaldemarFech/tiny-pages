@@ -1,0 +1,37 @@
+# wannkannichballern.wfech.de: public static DeepSeek peak clock.
+# Backend: nginx on CT <ct-id> tiny-pages (Netcup VPS) 192.0.2.32:80.
+# Public means: no auth, but no write path, no LAN tunnel, CrowdSec is global
+# on the websecure entrypoint, plus rate limit and security headers here.
+http:
+  routers:
+    wannkannichballern:
+      rule: "Host(`wannkannichballern.wfech.de`)"
+      entryPoints: [websecure]
+      service: wannkannichballern-web
+      middlewares: [wann-rate, wann-headers]
+      tls:
+        certResolver: letsencrypt
+
+  middlewares:
+    wann-rate:
+      rateLimit:
+        average: 30
+        burst: 60
+        period: 1s
+    wann-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: false
+        stsPreload: false
+        contentTypeNosniff: true
+        frameDeny: true
+        referrerPolicy: no-referrer
+        customResponseHeaders:
+          X-Robots-Tag: "noindex, nofollow"
+
+  services:
+    wannkannichballern-web:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://192.0.2.32:80

@@ -1,0 +1,10 @@
+[Unit]
+Description=Monthly refresh of the Chinese holiday list
+
+[Timer]
+OnCalendar=*-*-05 04:17:00
+Persistent=true
+RandomizedDelaySec=1h
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,34 @@
+# Public static Netzfilter-Labor page on TinyPages LXC 100.
+http:
+  routers:
+    netzfilter:
+      rule: "Host(`netzfilter.wfech.de`)"
+      entryPoints: [websecure]
+      service: netzfilter-labor-web
+      middlewares: [netzfilter-rate, netzfilter-headers]
+      tls:
+        certResolver: letsencrypt
+
+  middlewares:
+    netzfilter-rate:
+      rateLimit:
+        average: 30
+        burst: 60
+        period: 1s
+    netzfilter-headers:
+      headers:
+        stsSeconds: 31536000
+        stsIncludeSubdomains: false
+        stsPreload: false
+        contentTypeNosniff: true
+        frameDeny: true
+        referrerPolicy: no-referrer
+        customResponseHeaders:
+          X-Robots-Tag: "noindex, nofollow"
+
+  services:
+    netzfilter-labor-web:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://192.0.2.32:80

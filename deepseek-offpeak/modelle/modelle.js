@@ -36,7 +36,7 @@ async function loadTrending() {
 function renderFoot() {
   const mu = D ? orModelUrl(D.model) : null;
   if (mu) $('orModel').href = mu;
-  $('foot').innerHTML = `Datenquelle: OpenRouter (Modelle, Preise) plus der ${D ? esc(D.node) : 'lokale'}-Router für die Markierung „unser Modell“. Rein lesende Anzeige. Es werden keine Schlüssel, Sitzungs-IDs oder Pfade veröffentlicht. · <a href="../">Provider-Router</a> · <a href="../preis-uhr/">Preis-Uhr (Peak/Off-Peak)</a>`;
+  $('foot').innerHTML = `Datenquelle: OpenRouter (Modelle, Preise) plus der ${D ? esc(D.node) : 'lokale'}-Router für die Markierung „unser Modell“. Rein lesende Anzeige. Es werden keine Schlüssel, Sitzungs-IDs oder Pfade veröffentlicht. · <a href="/">Provider-Router</a> · <a href="/preis-uhr/">Preis-Uhr (Peak/Off-Peak)</a>`;
 }
 
 // explanation dialog (same behaviour as the router page)

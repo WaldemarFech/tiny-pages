@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Regenerate holidays.js from the public Timor holiday API.
+"""Regenerate holidays.js from the official Chinese holiday API.
 
-Keeps the previous file when the
+Runs monthly on the tiny-pages container. Keeps the previous file when the
 fetch fails or a year is not published yet (the API returns an empty object
 for future years). Only holiday=true entries are written; make-up workdays are
 ignored on purpose.
@@ -18,7 +18,7 @@ import tempfile
 import urllib.request
 
 API = "https://timor.tech/api/holiday/year/{year}"
-OUT = pathlib.Path(__file__).resolve().parents[1] / "preis-uhr" / "holidays.js"
+OUT = pathlib.Path("/srv/pages/deepseek-offpeak/preis-uhr/holidays.js")
 NAMES = {
     "元旦": "元旦",
     "春节": "春节",
@@ -41,7 +41,7 @@ NAMES = {
 def fetch(year: int) -> dict[str, str]:
     req = urllib.request.Request(
         API.format(year=year),
-        headers={"User-Agent": "tiny-pages/1.0"},
+        headers={"User-Agent": "jarvis-tiny-pages/1.0"},
     )
     with urllib.request.urlopen(req, timeout=20) as response:
         payload = json.load(response)
@@ -78,7 +78,7 @@ def main() -> int:
         "export const CN_HOLIDAYS = {",
     ]
     for date, name in sorted(merged.items()):
-        lines.append(f"  {json.dumps(date)}: {json.dumps(name, ensure_ascii=False)},")
+        lines.append(f"  '{date}': '{name}',")
     lines.append("};")
     content = "\n".join(lines) + "\n"
 

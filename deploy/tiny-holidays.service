@@ -1,0 +1,8 @@
+[Unit]
+Description=Refresh the Chinese holiday list for tiny-pages
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/tiny-pages/update_holidays.py
