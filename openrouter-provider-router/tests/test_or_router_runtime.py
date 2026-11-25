@@ -32,10 +32,10 @@ def fake_repo(tmp_path, name="main-checkout"):
 
 def test_temporary_paths_are_recognised():
     assert RT.is_temporary("C:\\Users\\example\\jarvis-worktrees\\wkb-dashboard")
-    assert RT.is_temporary("C:/Users/walde/.claude/worktrees/x")
-    assert RT.is_temporary("C:/Users/walde/AppData/Local/Temp/claude/foo/scratchpad/x")
-    assert not RT.is_temporary("C:/Users/walde/Desktop/Jarvis")
-    assert not RT.is_temporary("C:/Users/walde/jarvis-live/releases/abc")
+    assert RT.is_temporary("C:/Users/example/.claude/worktrees/x")
+    assert RT.is_temporary("C:/Users/example/AppData/Local/Temp/claude/foo/scratchpad/x")
+    assert not RT.is_temporary("C:/Users/example/Desktop/Jarvis")
+    assert not RT.is_temporary("C:/Users/example/jarvis-live/releases/abc")
 
 
 def test_task_xml_is_valid_and_runs_the_cycle_every_interval_without_overlap():
