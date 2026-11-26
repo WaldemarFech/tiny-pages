@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 import {
   daySegments, durationText, formatChangeDate, formatHM, isPeak, localClock,
   localDayStart, localDateKey, localNoon, nextOffsetChange, nextTransition,

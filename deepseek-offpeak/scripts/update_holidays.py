@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Regenerate holidays.js from the official Chinese holiday API.
 
 Runs monthly on the tiny-pages container. Keeps the previous file when the
@@ -70,6 +72,8 @@ def main() -> int:
         return 1
 
     lines = [
+        "/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 |",
+        "    https://github.com/WaldemarFech/tiny-pages */",
         "// Chinese public holidays (official State Council schedule), Beijing calendar day.",
         "// Generated from https://timor.tech/api/holiday/year/<year> by",
         "// scripts/update_holidays.py. Keep this file static so the page needs no",

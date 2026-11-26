@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // German explanation texts for the info popovers. Numbers come from router.json "thresholds" so the page never states a stale limit.
 import { fmtPct } from './model.js?v=20261102d';
 

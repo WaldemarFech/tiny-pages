@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Public dashboard data for the OpenRouter provider router: expectation vs measurement, rankings, forecast, logs.
 
 Reads the router's own files (<state>/decision.json, decisions.jsonl, price_events.jsonl, usage.jsonl, keyusage.jsonl) and

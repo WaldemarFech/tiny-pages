@@ -135,3 +135,8 @@ Consequences for contributors:
 Apache License 2.0 — see `LICENSE` (unmodified license text). Attribution:
 `NOTICE`. Keep the `NOTICE` file if you redistribute or build on this code;
 there is no attribution requirement in the user interface.
+
+Every source file starts with a one-line marker
+(`tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | <repo URL>`) and,
+where the language allows it, an `SPDX-License-Identifier`. It is visible in the
+page source and in the code, not on the rendered page.

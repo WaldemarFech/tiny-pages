@@ -1,3 +1,5 @@
+// tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+// SPDX-License-Identifier: Apache-2.0
 // bun test ./.opencode/plugins/or-provider-router.test.ts - pure pin/idle-gap logic, no opencode runtime.
 import { expect, test } from "bun:test"
 import { isStale, pickOrder } from "./or-provider-router.ts"

@@ -1,3 +1,4 @@
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages`n// SPDX-License-Identifier: Apache-2.0
 """Tests for scripts/models/or_router_export.py: sections, expectation-vs-measurement control, sanitization."""
 from __future__ import annotations
 

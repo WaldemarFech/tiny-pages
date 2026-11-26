@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // OpenRouter leaderboard (day | week side by side), "my top 3" price picks and the free/stealth model list.
 // Data: models_trending.json from scripts/models/openrouter_trending.py (public OpenRouter rankings feed + catalog).
 import { EXT_ICON, ago, entryUnitCost, extLink, fmtPct, fmtPrice, fmtTok, fmtUsd, orModelUrl, orRankingsUrl, pickTop3, safeOrUrl, tsSec } from './model.js?v=20261102d';

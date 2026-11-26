@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 /* Router dashboard styles. Dark default, light via prefers-color-scheme. Status = symbol + word + color (never color alone). */
 :root {
   --bg: #0b0f14; --card: #131a23; --card2: #0f151d; --line: #24303d; --text: #e6edf3; --muted: #93a1b3;

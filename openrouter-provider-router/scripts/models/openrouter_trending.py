@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """OpenRouter trending top-10 (day and week) with prices, free/stealth flags and diff.
 
 Public data sources (verified 2026-10-25, no API key required):

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Runtime installer of the OpenRouter router: points EVERYTHING that keeps it alive at one checkout - the global opencode plugin shim(s),
 the recorded interpreter and the Windows task "Jarvis OR Router Cycle" (cycle every 10 min, no console window).
 

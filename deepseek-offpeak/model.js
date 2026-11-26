@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // Pure helpers for the router dashboard (no DOM): formatting, cost model, badge semantics, what-if ranking.
 // The cost formula mirrors scripts/models/or_provider_router.py unit_cost(): USD per 1M prompt tokens at a given cache-hit rate.
 

@@ -1,3 +1,5 @@
+// tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+// SPDX-License-Identifier: Apache-2.0
 /**
  * OpenRouter provider router for opencode: applies the decision of scripts/models/or_provider_router.py per request.
  *

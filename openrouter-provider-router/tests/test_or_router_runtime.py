@@ -1,3 +1,4 @@
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages`n// SPDX-License-Identifier: Apache-2.0
 """Runtime installer: temporary-path refusal, task XML, install/verify/uninstall with a fake process runner (no real schtasks)."""
 from __future__ import annotations
 

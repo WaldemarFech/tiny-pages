@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Trending step of the router cycle: refresh the OpenRouter day/week leaderboard (scripts/models/openrouter_trending.py) at most every
 `trending_hours` and publish <state>/models_trending.json next to router.json. A failed fetch keeps the old file (stale beats broken)."""
 from __future__ import annotations

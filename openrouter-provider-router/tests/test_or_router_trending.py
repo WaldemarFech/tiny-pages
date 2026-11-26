@@ -1,3 +1,4 @@
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages`n// SPDX-License-Identifier: Apache-2.0
 """Trending step of the router cycle and the generalised publish (file name next to remote_path)."""
 from __future__ import annotations
 

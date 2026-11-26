@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Deterministic, cache-aware OpenRouter provider router (decision engine).
 
 Why: the cheapest list price is not the cheapest provider. With ~94 % cache reads the cache-read

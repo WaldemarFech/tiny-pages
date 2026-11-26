@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Publish step of the router dashboard: pipe <state>/router.json into the tiny-pages container (VPS host -> pct exec).
 
 Everything from the config ends up in an ssh command line, so host, port, container id, key and remote path are validated strictly

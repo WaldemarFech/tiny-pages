@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // Hand-written SVG charts (no libraries: strict CSP, no third-party scripts). All functions return an SVG string.
 // Colors come from CSS classes (see router.css) so both themes work; shapes/dashes carry meaning, not color alone.
 

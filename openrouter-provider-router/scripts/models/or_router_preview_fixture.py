@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages
+# SPDX-License-Identifier: Apache-2.0
 """Synthetic router.json for VISUAL QA of the dashboard only - the numbers are invented, the file is never published.
 
     python scripts/models/or_router_preview_fixture.py OUT.json [--hours 36] [--seed 7]

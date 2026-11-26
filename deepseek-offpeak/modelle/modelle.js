@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // Modelle page: OpenRouter-Rangliste + kostenlose Modelle (moved off the Router page 2026-11-01). Same read-only rules:
 // trending.json carries the leaderboard, router.json only marks our model and the profile used for "Meine Top 3".
 // This module lives in /modelle/, so every shared asset goes through the parent path.

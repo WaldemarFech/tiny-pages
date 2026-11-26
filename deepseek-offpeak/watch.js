@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // Provider watchlist: every provider that was rank 1 (cheapest for our usage) at some point in the last 7 days, its price curve,
 // the phases in which it was clearly cheap, and the hours in which it is typically cheap. Read-only, no controls on the router.
 import { ago, dayLabel, fmtDur, fmtPct, fmtPrice, hhmm } from './model.js?v=20261102d';

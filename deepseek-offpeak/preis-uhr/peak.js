@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // DeepSeek peak/off-peak logic.
 // Peak is defined in UTC: Mon-Fri 01:00-04:00 and 06:00-10:00 UTC.
 // Off-peak is half price. Chinese public holidays are off-peak all day

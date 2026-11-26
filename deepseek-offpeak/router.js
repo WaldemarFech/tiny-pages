@@ -1,3 +1,4 @@
+/*! tiny-pages | Copyright 2026 Waldemar Fech | Apache-2.0 | https://github.com/WaldemarFech/tiny-pages */
 // Router dashboard: read-only visualisation of router.json (no controls, no secrets). Renders into the sections of index.html.
 import { ago, breakevenHit, clamp, dayHour, dayTs, errorNotice, orModelUrl, dayLabel, describeFlank, fmtPct, fmtPrice, fmtTok, fmtUsd, fmtUsd2, hhmm, statusOf, verdict, whatIf } from './model.js?v=20261102d';
 import { bullets, lineChart, pairBars } from './charts.js?v=20261102d';
