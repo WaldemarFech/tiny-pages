@@ -132,4 +132,6 @@ Consequences for contributors:
 
 ## License
 
-Apache License 2.0 — see `LICENSE`. Attribution notices: `NOTICE`.
+Apache License 2.0 — see `LICENSE` (unmodified license text). Attribution:
+`NOTICE`. Keep the `NOTICE` file if you redistribute or build on this code;
+there is no attribution requirement in the user interface.
